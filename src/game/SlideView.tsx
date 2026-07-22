@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef } from 'react'
 import type { RuntimePlayer, WinnerConfig } from '../config/types'
 
 type Props = {
@@ -20,9 +21,68 @@ function textSlideOffset(hasCover: boolean): number {
   return hasCover ? 1 : 0
 }
 
-function textFontSize(text: string): number {
-  if (!text) return 15
-  return Math.max(4.5, Math.min(15, 70 / Math.sqrt(text.length)))
+const MAX_SLIDE_FONT_SIZE = 15
+const MIN_SLIDE_FONT_SIZE = 4.5
+
+function SlideText({ text }: { text: string }) {
+  const textRef = useRef<HTMLDivElement>(null)
+
+  useLayoutEffect(() => {
+    const element = textRef.current
+    const container = element?.parentElement
+    if (!element || !container) return
+
+    const fits = () => {
+      const containerStyle = getComputedStyle(container)
+      const availableWidth = container.clientWidth
+        - parseFloat(containerStyle.paddingLeft)
+        - parseFloat(containerStyle.paddingRight)
+      const availableHeight = container.clientHeight
+        - parseFloat(containerStyle.paddingTop)
+        - parseFloat(containerStyle.paddingBottom)
+
+      return element.scrollWidth <= availableWidth + 1
+        && element.scrollHeight <= availableHeight + 1
+    }
+
+    const fitText = () => {
+      element.style.fontSize = `${MAX_SLIDE_FONT_SIZE}vmin`
+      if (!text || fits()) return
+
+      let smallest = MIN_SLIDE_FONT_SIZE
+      let largest = MAX_SLIDE_FONT_SIZE
+
+      for (let attempt = 0; attempt < 12; attempt += 1) {
+        const candidate = (smallest + largest) / 2
+        element.style.fontSize = `${candidate}vmin`
+
+        if (fits()) smallest = candidate
+        else largest = candidate
+      }
+
+      element.style.fontSize = `${smallest}vmin`
+    }
+
+    fitText()
+    const resizeObserver = new ResizeObserver(fitText)
+    resizeObserver.observe(container)
+
+    let active = true
+    void document.fonts.ready.then(() => {
+      if (active) fitText()
+    })
+
+    return () => {
+      active = false
+      resizeObserver.disconnect()
+    }
+  }, [text])
+
+  return (
+    <div ref={textRef} className="slide-text" style={{ fontSize: `${MAX_SLIDE_FONT_SIZE}vmin` }}>
+      {text}
+    </div>
+  )
 }
 
 function WinnerScreen({ players, winnerConfig }: { players: RuntimePlayer[]; winnerConfig: WinnerConfig }) {
@@ -95,9 +155,7 @@ export function SlideView({
       ) : isWinnerSlide ? (
         <WinnerScreen players={players} winnerConfig={winnerConfig} />
       ) : (
-        <div className="slide-text" style={{ fontSize: `${textFontSize(currentSlide)}vmin` }}>
-          {currentSlide}
-        </div>
+        <SlideText text={currentSlide} />
       )}
 
       <div className="slide-navigation">

@@ -11,7 +11,7 @@ You can access it for free here on [GitHub pages](https://feliperenault.github.i
 - Make sure you allow autoplay for the webpage on your browser so the sounds play correctly
 - On the cover, you'll see a `⚙️` button. Click there (or press `S`) to edit the game and `Apply` the changes when you're done
 - Your changes should be saved on your browser, however, if making lots of changes, such as creating players and prompts, make sure to export a backup file as explained below
-- You can click `Download config.json` to export your settings file. That file can later be imported with the button on the top right of the settings page to automatically import all settings, players, prompts and cover image
+- You can click `Download config.json` to export your settings file. That file can later be imported with the button on the top right of the settings page to automatically import all settings, including players, prompts, cover image and sounds
 
 ## Installing
 
@@ -30,8 +30,7 @@ Open the local URL shown by Vite, usually `http://localhost:5173/`.
 
 ## Local settings
 
-- Leaving the exported `config.json` file on the `public` folder will automatically import the settings when running the code, however, local storage still has a higher priority
-- To change the audios played, you can overwrite the files in `public/assets/sounds`
+- Leaving the exported `config.json` file on the `public` folder will automatically import the settings when running the code, however, browser local storage still has a higher priority
 
 ## Contributing
 
