@@ -445,8 +445,9 @@ export function SettingsEditor({
                 {draft.slides.content.map((slide, index) => (
                   <div className="slide-edit-row" key={index}>
                     <strong>Slide {index + 1}</strong>
-                    <input
+                    <textarea
                       aria-label={`Slide ${index + 1} text`}
+                      rows={2}
                       value={slide}
                       onChange={(event) => updateDraft((current) => {
                         current.slides.content[index] = event.target.value

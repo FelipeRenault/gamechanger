@@ -226,7 +226,7 @@ button:disabled {
   font-size: 4.5vmin;
   line-height: 1.12;
   margin: 0;
-  padding: 0;
+  padding: 0.12em 0 0.04em;
   color: #f2f2f2;
   white-space: nowrap;
   overflow: hidden;
@@ -698,6 +698,11 @@ select:focus {
   border-top: 1px solid rgba(255,255,255,.1);
 }
 
+.slide-edit-row textarea {
+  min-width: 0;
+  resize: vertical;
+}
+
 
 .cover-settings-preview-wrap {
   display: flex;
@@ -933,7 +938,7 @@ select:focus {
     grid-area: slide-label;
   }
 
-  .slide-edit-row input {
+  .slide-edit-row textarea {
     grid-area: slide-content;
   }
 
